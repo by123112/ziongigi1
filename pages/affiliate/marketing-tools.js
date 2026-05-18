@@ -1,4 +1,4 @@
-import Link from 'next/link';        // THIS LINE WAS MISSING
+import Link from 'next/link';        // <-- THIS MUST BE FIRST
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { useState } from 'react';
 
