@@ -1,4 +1,4 @@
-import Link from 'next/link';        // <-- THIS MUST BE FIRST
+import Link from 'next/link';        
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { useState } from 'react';
 
@@ -17,12 +17,7 @@ export default function MarketingTools() {
         <div className="space-y-8">
           <div className="bg-white p-6 rounded-xl shadow">
             <h2 className="text-xl font-semibold">Email Swipe Copy</h2>
-            <textarea
-              rows="4"
-              className="input w-full font-mono text-sm"
-              readOnly
-              value="Hi friends, I just discovered Ziongigi – a marketplace for digital products. Check it out: {{your_affiliate_link}}"
-            />
+            <textarea rows="4" className="input w-full font-mono text-sm" readOnly value="Hi friends, I just discovered Ziongigi – a marketplace for digital products. Check it out: {{your_affiliate_link}}" />
             <button onClick={() => copy('Hi friends...', 'email')} className="mt-2 btn-secondary">Copy</button>
             {copied === 'email' && <span className="ml-2 text-green-600">Copied!</span>}
           </div>
