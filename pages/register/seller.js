@@ -17,10 +17,17 @@ export default function RegisterSeller() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     setError('');
+    setSuccess('');
 
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+    // 1. Sign up with Supabase Auth
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
     if (signUpError) {
       setError(signUpError.message);
       setLoading(false);
@@ -28,26 +35,16 @@ export default function RegisterSeller() {
     }
 
     const userId = data.user?.id;
-    if (userId) {
-      const { error: profileError } = await supabase.from('profiles').insert([
-        {
-          id: userId,
-          full_name: businessName,
-          phone,
-          role: 'seller',
-          verification_status: 'pending', // will be updated after completing verification
-          payout_details: { taxId, website },
-          // verification_docs will be added later
-        },
-      ]);
-      if (profileError) {
-        console.error(profileError);
-        setError('Account created but profile error. Contact support.');
-      } else {
-        setSuccess('Account created! Please verify your email, then log in and complete your verification details.');
-        setTimeout(() => router.push('/login'), 5000);
-      }
+    if (!userId) {
+      setError('User ID missing. Please try again.');
+      setLoading(false);
+      return;
     }
+
+    // 2. Profile will be auto-created by database trigger.
+    //    After email verification, redirect to login.
+    setSuccess('Seller account created! Please verify your email. After verification, log in to complete your seller profile.');
+    setTimeout(() => router.push('/login'), 5000);
     setLoading(false);
   };
 
@@ -89,7 +86,7 @@ export default function RegisterSeller() {
             <input type="url" className="input" placeholder="https://yourstore.com" value={website} onChange={e => setWebsite(e.target.value)} />
           </div>
           <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
-            ⚠️ After email verification, you must complete additional verification (ID, payout details) before listing products.
+            ⚠️ After email verification, log in and complete your seller profile to start listing products.
           </div>
           <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? 'Creating account...' : 'Register as Seller'}
